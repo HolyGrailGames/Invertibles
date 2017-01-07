@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="left-down" width="25" height="25" tilewidth="16" tileheight="16" nextobjectid="16">
  <tileset firstgid="1" name="rpg indoor tileset expansion 1 trans" tilewidth="16" tileheight="16" tilecount="132" columns="11">
-  <image source="../../../../../TileSets/Indoor RPG/rpg indoor tileset expansion 1 trans.png" width="176" height="192"/>
+  <image source="rpg indoor tileset expansion 1 trans.png" width="176" height="192"/>
  </tileset>
  <layer name="Background" width="25" height="25">
   <data encoding="csv">
