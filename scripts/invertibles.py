@@ -5,8 +5,8 @@ import pyscroll.data
 
 from scripts.projectile import Projectile
 from scripts.hero import Hero
-
 from pygame.sprite import Group
+from scripts.dialog_box import DialogBox
 from pygame.locals import *
 from pytmx.util_pygame import load_pygame
 from pyscroll.group import PyscrollGroup
@@ -89,6 +89,8 @@ class Invertibles(object):
 
         self.group.draw(surface)
         #self.projectiles.draw(self.screen)
+
+        DialogBox(self.screen, 'Hello World').blitme()
 
     def handle_input(self):
         """ Handle pygame input events
@@ -209,7 +211,7 @@ class Invertibles(object):
                 self.handle_input()
                 self.update(dt)
                 self.draw(self.screen)
-                pygame.display.flip()
+                pygame.display.update()
 
         except KeyboardInterrupt:
             self.running = False
