@@ -4,6 +4,8 @@ import pyscroll
 import pyscroll.data
 
 from scripts.hero import Hero
+from scripts.dialog_box import DialogBox
+
 from pygame.locals import *
 from pytmx.util_pygame import load_pygame
 from pyscroll.group import PyscrollGroup
@@ -82,6 +84,8 @@ class Invertibles(object):
 
         # draw the map and all sprites
         self.group.draw(surface)
+
+        DialogBox(self.screen, 'Hello World').blitme()
 
     def handle_input(self):
         """ Handle pygame input events
@@ -166,7 +170,7 @@ class Invertibles(object):
                 self.handle_input()
                 self.update(dt)
                 self.draw(self.screen)
-                pygame.display.flip()
+                pygame.display.update()
 
         except KeyboardInterrupt:
             self.running = False
