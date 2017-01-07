@@ -3,13 +3,13 @@ import os.path
 
 
 class Hero(pygame.sprite.Sprite):
-    
+
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image_down = pygame.image.load('data/ninja_down.png').convert_alpha()
-        self.image_up = pygame.image.load('data/ninja_up.png').convert_alpha()
-        self.image_right = pygame.image.load('data/ninja_right.png').convert_alpha()
-        self.image_left = pygame.image.load('data/ninja_left.png').convert_alpha()
+        self.image_down = pygame.image.load('data/ninja/ninja_down_idle.png').convert_alpha()
+        self.image_up = pygame.image.load('data/ninja/ninja_up_idle.png').convert_alpha()
+        self.image_right = pygame.image.load('data/ninja/ninja_right_idle.png').convert_alpha()
+        self.image_left = pygame.image.load('data/ninja/ninja_left_idle.png').convert_alpha()
         self.image = self.image_down
         self.velocity = [0, 0]
         self._position = [0, 0]
