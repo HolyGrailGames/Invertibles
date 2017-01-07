@@ -22,7 +22,7 @@ from pyscroll.group import PyscrollGroup
 # define configuration variables here
 RESOURCES_DIR = 'data'
 
-HERO_MOVE_SPEED = 200  # pixels per second
+HERO_MOVE_SPEED = 80  # pixels per second
 MAP_FILENAME = 'dungeon.tmx'
 
 
@@ -62,7 +62,7 @@ class Hero(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = load_image('hero.png').convert_alpha()
+        self.image = load_image('ninja_down.png').convert_alpha()
         self.velocity = [0, 0]
         self._position = [0, 0]
         self._old_position = self.position
@@ -121,7 +121,7 @@ class QuestGame(object):
 
         # create new renderer (camera)
         self.map_layer = pyscroll.BufferedRenderer(map_data, screen.get_size())
-        self.map_layer.zoom = 2
+        self.map_layer.zoom = 3
 
         # pyscroll supports layered rendering.  our map has 3 'under' layers
         # layers begin with 0, so the layers are 0, 1, and 2.
@@ -132,7 +132,7 @@ class QuestGame(object):
         self.hero = Hero()
 
         # put the hero in the center of the map
-        self.hero.position = self.map_layer.map_rect.topleft
+        self.hero.position = self.map_layer.map_rect.center
 
         # add our hero to the group
         self.group.add(self.hero)
@@ -157,7 +157,7 @@ class QuestGame(object):
                 break
 
             elif event.type == KEYDOWN:
-                if event.key == K_ESCAPE:
+                if event.key == K_ESCAPE or event.key == K_q:
                     self.running = False
                     break
 
