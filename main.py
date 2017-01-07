@@ -1,4 +1,4 @@
-from lib.invertibles import Invertibles
+from scripts.invertibles import Invertibles
 
 if __name__ == '__main__':
     Invertibles().run()
