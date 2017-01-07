@@ -15,7 +15,7 @@ from pyscroll.group import PyscrollGroup
 
 # define configuration variables here
 RESOURCES_DIR = 'data'
-
+PROJECTILE_SKIN = 0 # Which spell the user has selected
 HERO_MOVE_SPEED = 80  # pixels per second
 MAP_FILENAME = 'dungeon.tmx'
 
@@ -71,7 +71,6 @@ class Invertibles(object):
         # since we want the sprite to be on top of layer 1, we set the default
         # layer for sprites as 2
         self.group = PyscrollGroup(map_layer=self.map_layer, default_layer=3)
-        self.group2 = PyscrollGroup(map_layer=self.map_layer, default_layer=3)
         self.hero = Hero()
 
         # put the hero in the center of the map
@@ -93,8 +92,7 @@ class Invertibles(object):
         DialogBox(self.screen, 'Hello World').blitme()
 
     def handle_input(self):
-        """ Handle pygame input events
-        """
+        """ Handle pygame input events"""
         poll = pygame.event.poll
 
         event = poll()
@@ -115,6 +113,21 @@ class Invertibles(object):
                     value = self.map_layer.zoom - .25
                     if value > 0:
                         self.map_layer.zoom = value
+
+                # Cast spells
+                elif event.key == K_UP:
+                    new_projectile = Projectile(self.screen, self.hero, 'UP', PROJECTILE_SKIN)
+                    self.group.add(new_projectile)
+                elif event.key == K_LEFT:
+                    new_projectile = Projectile(self.screen, self.hero, 'LEFT', PROJECTILE_SKIN)
+                    self.group.add(new_projectile)
+                elif event.key == K_RIGHT:
+                    new_projectile = Projectile(self.screen, self.hero, 'RIGHT', PROJECTILE_SKIN)
+                    self.group.add(new_projectile)
+                elif event.key == K_DOWN:
+                    new_projectile = Projectile(self.screen, self.hero, 'DOWN', PROJECTILE_SKIN)
+                    self.group.add(new_projectile)
+
 
             # this will be handled if the window is resized
             elif event.type == VIDEORESIZE:
@@ -144,22 +157,17 @@ class Invertibles(object):
         else:
             self.hero.velocity[0] = 0
 
-        # Shoot up or down
-        if pressed[K_UP]:
-            new_projectile = Projectile(self.screen, self.hero, 'UP')
-            self.group.add(new_projectile)
-        elif pressed[K_DOWN]:
-            new_projectile = Projectile(self.screen, self.hero, 'DOWN')
-            self.group.add(new_projectile)
+        # Change spells
+        global PROJECTILE_SKIN
 
-        # Shoot left or right
-        if pressed[K_LEFT]:
-            new_projectile = Projectile(self.screen, self.hero, 'LEFT')
-            self.group.add(new_projectile)
-        elif pressed[K_RIGHT]:
-            new_projectile = Projectile(self.screen, self.hero, 'RIGHT')
-            self.group.add(new_projectile)
-            #self.projectiles.add(new_projectile)
+        if pressed[K_1]:
+            PROJECTILE_SKIN = 0
+        elif pressed[K_2]:
+            PROJECTILE_SKIN = 1
+        elif pressed[K_3]:
+            PROJECTILE_SKIN = 2
+        elif pressed[K_4]:
+            PROJECTILE_SKIN = 3
 
 
 
@@ -190,9 +198,8 @@ class Invertibles(object):
                     sprite.move_back(dt)
             if sprite.name == 'projectile':
                 if sprite.rect.collidelist(self.walls) > -1:
-                    print(len(self.group.sprites()))
                     self.group.remove(sprite)
-                    print(len(self.group.sprites()))
+
     def run(self):
         """ Run the game loop"""
 
