@@ -3,7 +3,7 @@ import os.path
 
 
 class Hero(pygame.sprite.Sprite):
-    
+
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
         self.image_down = pygame.image.load('data/ninja_down.png').convert_alpha()
@@ -11,6 +11,7 @@ class Hero(pygame.sprite.Sprite):
         self.image_right = pygame.image.load('data/ninja_right.png').convert_alpha()
         self.image_left = pygame.image.load('data/ninja_left.png').convert_alpha()
         self.image = self.image_down
+        self.name = 'hero'
         self.velocity = [0, 0]
         self._position = [0, 0]
         self._old_position = self.position
@@ -43,8 +44,7 @@ class Hero(pygame.sprite.Sprite):
         self.feet.midbottom = self.rect.midbottom
 
     def move_back(self, dt):
-        """ If called after an update, the sprite can move back
-        """
+        """ If called after an update, the sprite can move back"""
         self._position = self._old_position
         self.rect.topleft = self._position
         self.feet.midbottom = self.rect.midbottom

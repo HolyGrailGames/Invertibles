@@ -3,7 +3,10 @@ import pygame
 import pyscroll
 import pyscroll.data
 
+from scripts.projectile import Projectile
 from scripts.hero import Hero
+
+from pygame.sprite import Group
 from pygame.locals import *
 from pytmx.util_pygame import load_pygame
 from pyscroll.group import PyscrollGroup
@@ -40,6 +43,8 @@ class Invertibles(object):
         self.screen = init_screen(800, 600)
         pygame.display.set_caption('Invertibles.')
 
+        # Store projectiles in a group
+        self.projectiles = Group()
 
         # true while running
         self.running = False
@@ -66,7 +71,7 @@ class Invertibles(object):
         # since we want the sprite to be on top of layer 1, we set the default
         # layer for sprites as 2
         self.group = PyscrollGroup(map_layer=self.map_layer, default_layer=3)
-
+        self.group2 = PyscrollGroup(map_layer=self.map_layer, default_layer=3)
         self.hero = Hero()
 
         # put the hero in the center of the map
@@ -81,7 +86,9 @@ class Invertibles(object):
         self.group.center(self.hero.rect.center)
 
         # draw the map and all sprites
+
         self.group.draw(surface)
+        #self.projectiles.draw(self.screen)
 
     def handle_input(self):
         """ Handle pygame input events
@@ -114,43 +121,79 @@ class Invertibles(object):
 
             event = poll()
 
-        # using get_pressed is slightly less accurate than testing for events
-        # but is much easier to use.
+        # Move up or down
         pressed = pygame.key.get_pressed()
-        if pressed[K_UP]:
+        if pressed[K_w]:
             self.hero.velocity[1] = -HERO_MOVE_SPEED
-            self.hero.image
             self.hero.change_sprite(pygame.K_UP)
-        elif pressed[K_DOWN]:
+        elif pressed[K_s]:
             self.hero.velocity[1] = HERO_MOVE_SPEED
             self.hero.change_sprite(pygame.K_DOWN)
         else:
             self.hero.velocity[1] = 0
 
-        if pressed[K_LEFT]:
+        # Move left or right
+        if pressed[K_a]:
             self.hero.velocity[0] = -HERO_MOVE_SPEED
             self.hero.change_sprite(pygame.K_LEFT)
-        elif pressed[K_RIGHT]:
+        elif pressed[K_d]:
             self.hero.velocity[0] = HERO_MOVE_SPEED
             self.hero.change_sprite(pygame.K_RIGHT)
         else:
             self.hero.velocity[0] = 0
 
+        # Shoot up or down
+        if pressed[K_UP]:
+            new_projectile = Projectile(self.screen, self.hero, 'UP')
+            self.group.add(new_projectile)
+        elif pressed[K_DOWN]:
+            new_projectile = Projectile(self.screen, self.hero, 'DOWN')
+            self.group.add(new_projectile)
+
+        # Shoot left or right
+        if pressed[K_LEFT]:
+            new_projectile = Projectile(self.screen, self.hero, 'LEFT')
+            self.group.add(new_projectile)
+        elif pressed[K_RIGHT]:
+            new_projectile = Projectile(self.screen, self.hero, 'RIGHT')
+            self.group.add(new_projectile)
+            #self.projectiles.add(new_projectile)
+
+
+
+    def update_projectiles(self):
+        """Update position of projectiles and get rid of old bullets."""
+        # Update projectile positions
+        self.projectiles.update()
+
+
+        # Get rid of projectiles that have gone off screen
+        for projectile in self.projectiles.copy():
+            if projectile.rect.bottom <= 0:
+                self.projectiles.remove(projectile)
+
+
     def update(self, dt):
-        """ Tasks that occur over time should be handled here
-        """
+        """ Tasks that occur over time should be handled here"""
         self.group.update(dt)
+        self.update_projectiles()
 
         # check if the sprite's feet are colliding with wall
         # sprite must have a rect called feet, and move_back method,
         # otherwise this will fail
-        for sprite in self.group.sprites():
-            if sprite.feet.collidelist(self.walls) > -1:
-                sprite.move_back(dt)
 
+        for sprite in self.group.sprites():
+            if sprite.name == 'hero':
+                if sprite.feet.collidelist(self.walls) > -1:
+                    sprite.move_back(dt)
+            if sprite.name == 'projectile':
+                if sprite.rect.collidelist(self.walls) > -1:
+                    print(len(self.group.sprites()))
+                    self.group.remove(sprite)
+                    print(len(self.group.sprites()))
     def run(self):
-        """ Run the game loop
-        """
+        """ Run the game loop"""
+
         clock = pygame.time.Clock()
         self.running = True
 
