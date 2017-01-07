@@ -62,7 +62,11 @@ class Hero(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.image = load_image('ninja_down.png').convert_alpha()
+        self.image_down = load_image('ninja_down.png').convert_alpha()
+        self.image_up = load_image('ninja_up.png').convert_alpha()
+        self.image_right = load_image('ninja_right.png').convert_alpha()
+        self.image_left = load_image('ninja_left.png').convert_alpha()
+        self.image = self.image_down
         self.velocity = [0, 0]
         self._position = [0, 0]
         self._old_position = self.position
@@ -76,6 +80,16 @@ class Hero(pygame.sprite.Sprite):
     @position.setter
     def position(self, value):
         self._position = list(value)
+
+    def change_sprite(self, key):
+        if key == pygame.K_DOWN:
+            self.image = self.image_down
+        if key == pygame.K_UP:
+            self.image = self.image_up
+        if key == pygame.K_RIGHT:
+            self.image = self.image_right
+        if key == pygame.K_LEFT:
+            self.image = self.image_left
 
     def update(self, dt):
         self._old_position = self._position[:]
@@ -121,7 +135,7 @@ class QuestGame(object):
 
         # create new renderer (camera)
         self.map_layer = pyscroll.BufferedRenderer(map_data, screen.get_size())
-        self.map_layer.zoom = 3
+        self.map_layer.zoom = 3.75
 
         # pyscroll supports layered rendering.  our map has 3 'under' layers
         # layers begin with 0, so the layers are 0, 1, and 2.
@@ -181,15 +195,20 @@ class QuestGame(object):
         pressed = pygame.key.get_pressed()
         if pressed[K_UP]:
             self.hero.velocity[1] = -HERO_MOVE_SPEED
+            self.hero.image
+            self.hero.change_sprite(pygame.K_UP)
         elif pressed[K_DOWN]:
             self.hero.velocity[1] = HERO_MOVE_SPEED
+            self.hero.change_sprite(pygame.K_DOWN)
         else:
             self.hero.velocity[1] = 0
 
         if pressed[K_LEFT]:
             self.hero.velocity[0] = -HERO_MOVE_SPEED
+            self.hero.change_sprite(pygame.K_LEFT)
         elif pressed[K_RIGHT]:
             self.hero.velocity[0] = HERO_MOVE_SPEED
+            self.hero.change_sprite(pygame.K_RIGHT)
         else:
             self.hero.velocity[0] = 0
 
