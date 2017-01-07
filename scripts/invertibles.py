@@ -85,11 +85,15 @@ class Invertibles(object):
         # draw the map and all sprites
         self.group.draw(surface)
 
-        DialogBox(self.screen, 'Hello World').blitme()
+        dialogbox = DialogBox(self.screen)
+        dialogbox.blitme()
+
+        rendered_text = dialogbox.render_textrect('Welcome Adventurer to the crazy world of the Polar Opposites! You will find many perils ahead that can be vanquished with your mighty magic abilities! May the power of the poles be with you!')
+        if rendered_text:
+            self.screen.blit(rendered_text, dialogbox.textarea_rect)
 
     def handle_input(self):
-        """ Handle pygame input events
-        """
+        """ Handle pygame input events """
         poll = pygame.event.poll
 
         event = poll()
