@@ -15,7 +15,6 @@ from pyscroll.group import PyscrollGroup
 
 # define configuration variables here
 RESOURCES_DIR = 'data'
-PROJECTILE_SKIN = 0 # Which spell the user has selected
 HERO_MOVE_SPEED = 80  # pixels per second
 MAP_FILENAME = 'dungeon.tmx'
 
@@ -79,7 +78,10 @@ class Invertibles(object):
         # add our hero to the group
         self.group.add(self.hero)
 
-    def draw(self, surface):
+        self.projectile_skin = 0 # Which spell the user has selected
+        self.clock = pygame.time.Clock()
+
+    def draw(self, surface, text=None):
 
         # center the map/screen on our Hero
         self.group.center(self.hero.rect.center)
@@ -89,12 +91,13 @@ class Invertibles(object):
         self.group.draw(surface)
         #self.projectiles.draw(self.screen)
 
-        dialogbox = DialogBox(self.screen)
-        dialogbox.blitme()
+        if text:
+            dialogbox = DialogBox(self.screen)
+            dialogbox.blitme()
 
-        rendered_text = dialogbox.render_textrect('Welcome Adventurer to the crazy world of the Polar Opposites! You will find many perils ahead that can be vanquished with your mighty magic abilities! May the power of the poles be with you!')
-        if rendered_text:
-            self.screen.blit(rendered_text, dialogbox.textarea_rect)
+            rendered_text = dialogbox.render_textrect(text)
+            if rendered_text:
+                self.screen.blit(rendered_text, dialogbox.textarea_rect)
 
     def handle_input(self):
         """ Handle pygame input events """
@@ -121,16 +124,16 @@ class Invertibles(object):
 
                 # Cast spells
                 elif event.key == K_UP:
-                    new_projectile = Projectile(self.screen, self.hero, 'UP', PROJECTILE_SKIN)
+                    new_projectile = Projectile(self.screen, self.hero, 'UP', self.projectile_skin)
                     self.group.add(new_projectile)
                 elif event.key == K_LEFT:
-                    new_projectile = Projectile(self.screen, self.hero, 'LEFT', PROJECTILE_SKIN)
+                    new_projectile = Projectile(self.screen, self.hero, 'LEFT', self.projectile_skin)
                     self.group.add(new_projectile)
                 elif event.key == K_RIGHT:
-                    new_projectile = Projectile(self.screen, self.hero, 'RIGHT', PROJECTILE_SKIN)
+                    new_projectile = Projectile(self.screen, self.hero, 'RIGHT', self.projectile_skin)
                     self.group.add(new_projectile)
                 elif event.key == K_DOWN:
-                    new_projectile = Projectile(self.screen, self.hero, 'DOWN', PROJECTILE_SKIN)
+                    new_projectile = Projectile(self.screen, self.hero, 'DOWN', self.projectile_skin)
                     self.group.add(new_projectile)
 
 
@@ -163,16 +166,15 @@ class Invertibles(object):
             self.hero.velocity[0] = 0
 
         # Change spells
-        global PROJECTILE_SKIN
 
         if pressed[K_1]:
-            PROJECTILE_SKIN = 0
+            self.projectile_skin = 0
         elif pressed[K_2]:
-            PROJECTILE_SKIN = 1
+            self.projectile_skin = 1
         elif pressed[K_3]:
-            PROJECTILE_SKIN = 2
+            self.projectile_skin = 2
         elif pressed[K_4]:
-            PROJECTILE_SKIN = 3
+            self.projectile_skin = 3
 
 
 
@@ -208,22 +210,30 @@ class Invertibles(object):
     def run(self):
         """ Run the game loop"""
 
-        clock = pygame.time.Clock()
         self.running = True
 
-        from collections import deque
-        times = deque(maxlen=30)
+        text = ['Welcome Adventurer to the crazy world of the Polar Opposites! You will find many perils ahead that can be vanquished with your mighty magic abilities! May the power of the poles be with you!']
+        self.run_dialog(text)
 
-        try:
-            while self.running:
-                dt = clock.tick(60) / 1000.
-                times.append(clock.get_fps())
-                # print(sum(times) / len(times))
+        while self.running:
+            dt = self.clock.tick(60) / 1000.
 
-                self.handle_input()
-                self.update(dt)
-                self.draw(self.screen)
-                pygame.display.update()
+            self.handle_input()
+            self.update(dt)
+            self.draw(self.screen)
+            pygame.display.update()
 
-        except KeyboardInterrupt:
-            self.running = False
+    def run_dialog(self, text):
+        self.update(0)
+        while text:
+            self.clock.tick(60)
+            self.draw(self.screen, text[0])
+            if self.handle_dialog_box_input():
+                text.remove(text[0])
+            pygame.display.update()
+
+    def handle_dialog_box_input(self):
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:
+                    return True
