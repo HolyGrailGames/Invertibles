@@ -16,7 +16,8 @@ from pyscroll.group import PyscrollGroup
 # define configuration variables here
 RESOURCES_DIR = 'data'
 HERO_MOVE_SPEED = 80  # pixels per second
-MAP_FILENAME = 'dungeon.tmx'
+#MAP_FILENAME = 'house_1.tmx'
+MAP_FILENAME = 'town.tmx'
 
 # simple wrapper to keep the screen resizeable
 def init_screen(width, height):
@@ -73,7 +74,7 @@ class Invertibles(object):
         self.hero = Hero()
 
         # put the hero in the center of the map
-        self.hero.position = self.map_layer.map_rect.center
+        self.hero.position = self.map_layer.map_rect.move(0, 10).center
 
         # add our hero to the group
         self.group.add(self.hero)

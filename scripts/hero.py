@@ -1,6 +1,7 @@
 import pygame
 import os.path
 
+from pygame.time import get_ticks
 
 class Hero(pygame.sprite.Sprite):
 
@@ -17,6 +18,7 @@ class Hero(pygame.sprite.Sprite):
         self._old_position = self.position
         self.rect = self.image.get_rect()
         self.feet = pygame.Rect(0, 0, self.rect.width * .5, 8)
+        self.last_step = pygame.time.get_ticks()
 
     @property
     def position(self):
