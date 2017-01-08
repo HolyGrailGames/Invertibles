@@ -2,6 +2,7 @@ import os.path
 import pygame
 import pyscroll
 import pyscroll.data
+import random
 from pygame.sprite import Group
 from pygame.locals import *
 from pytmx.util_pygame import load_pygame
@@ -11,7 +12,7 @@ from scripts.projectile import Projectile
 from scripts.hero import Hero
 from scripts.sounds import Sounds
 from scripts.dialog_box import DialogBox
-
+from scripts.elementals import Elementals
 
 # define configuration variables here
 RESOURCES_DIR = 'data'
@@ -80,11 +81,19 @@ class Invertibles(object):
         self.group = PyscrollGroup(map_layer=self.map_layer, default_layer=3)
         self.hero = Hero()
 
-        # put the hero in the center of the map
+        # Spawn an elemental below the house
+        self.elemental = Elementals()
+        self.elemental.position = self.map_layer.map_rect.move(-321, -150).center
+        self.elementals = list()
+        self.elementals.append(self.elemental)
+        self.group.add(self.elemental)
+
+        # Spawn the hero outside his house
         self.hero.position = self.map_layer.map_rect.move(-321, -185).center
 
         # add our hero to the group
         self.group.add(self.hero)
+
 
         self.projectile_skin = 0 # Which spell the user has selected
         self.clock = pygame.time.Clock()
@@ -241,13 +250,32 @@ class Invertibles(object):
         # sprite must have a rect called feet, and move_back method,
         # otherwise this will fail
 
+
         for sprite in self.group.sprites():
             if sprite.name == 'hero':
                 if sprite.feet.collidelist(self.walls) > -1:
                     sprite.move_back(dt)
-            if sprite.name == 'projectile':
+                elif sprite.feet.collidelist(self.elementals) > -1:
+                    sprite.move_back(dt)
+            elif sprite.name == 'elemental':
+                if sprite.feet.collidelist(self.walls) > -1:
+                    sprite.move_back(dt)
+                else:
+                    sprite.update(dt)
+
+
+
+
+
+            elif sprite.name == 'projectile':
+                collide_elemental = sprite.rect.collidelist(self.elementals)
                 if sprite.rect.collidelist(self.walls) > -1:
                     self.group.remove(sprite)
+                elif collide_elemental > -1:
+                    self.group.remove(sprite)
+                    self.group.remove(self.elementals[collide_elemental])
+                    self.elementals.pop(collide_elemental)
+
 
     def run(self):
         """ Run the game loop"""

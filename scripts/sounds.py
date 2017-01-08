@@ -11,8 +11,10 @@ class Sounds():
         # Sound Effects
         self.fireball = Sound('data/sounds/fireball-whoosh.ogg')
         self.select_spell = Sound('data/sounds/metal-small1.ogg')
+        self.set_volume()
 
 
     def set_volume(self):
         """Set volume of Sounds."""
-        self.town_theme.set_volume(.75)
+        self.town_theme.set_volume(0.2)
+        self.fireball.set_volume(1)
