@@ -68,6 +68,11 @@ class Elementals(pygame.sprite.Sprite):
             self.reset_movement()
             self.moving[direction] = True
 
+    def set_rect(self, x, y):
+        """Set the rect of the elemental."""
+        self.rect.x = x
+        self.rect.y = y
+        
     def reset_movement(self):
         """Reset movement flags to False."""
         self.moving = {'UP': False, 'DOWN': False, 'LEFT': False, 'RIGHT': False}

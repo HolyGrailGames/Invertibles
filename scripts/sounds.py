@@ -17,5 +17,6 @@ class Sounds():
 
     def set_volume(self):
         """Set volume of Sounds."""
-        self.town_theme.set_volume(0.2)
+        self.town_theme.set_volume(0.5)
         self.fireball.set_volume(1)
+        self.monster_kill.set_volume(0.75)

@@ -3,12 +3,14 @@ import pygame
 import pyscroll
 import pyscroll.data
 import random
+import sys
 from random import randint
 from pygame.sprite import Group
 from pygame.locals import *
 from pytmx.util_pygame import load_pygame
 from pyscroll.group import PyscrollGroup
 
+from scripts.text import Text
 from scripts.npc import NPC
 from scripts.projectile import Projectile
 from scripts.hero import Hero
@@ -90,7 +92,7 @@ class Invertibles(object):
         self.spawn_elementals()
 
         # Spawn the hero outside his house
-        self.hero.position = self.map_layer.map_rect.move(-321, -185).center
+        self.hero.position = self.map_layer.map_rect.move(528, 592).topleft
 
         # add our hero to the group
         self.group.add(self.hero)
@@ -111,6 +113,9 @@ class Invertibles(object):
 
         self.group.draw(surface)
         #self.projectiles.draw(self.screen)
+
+        score = Text(self.screen, str(len(self.elementals)) + " dark elementals remaining", (0,0,0), 650, 10)
+        score.blitme()
 
         if text:
             dialogbox = DialogBox(self.screen)
@@ -285,7 +290,10 @@ class Invertibles(object):
         self.running = True
         self.music_channel.play(self.sounds.town_theme, -1)
 
-        text = ['Welcome Adventurer to the crazy world of the Polar Opposites! You will find many perils ahead that can be vanquished with your mighty magic abilities! May the power of the poles be with you!']
+        text = ['We, the people of Polaria have summoned thee, the Lord of Light!\n\nPress enter to continue.',
+                'Our beloved town has been overrun by evil dark elementals! Their dark magic can only be fought with the magic of Light!\n\nPress Enter to continue.',
+                'Use WASD to move around and the arrow keys to cast your spells. You can switch spells with keys 1-4.\n\nPress Enter to continue.',
+                'Good luck! And may the power of Light be with you!\n\nPress enter to continue.']
         self.run_dialog(text)
 
         while self.running:
@@ -293,7 +301,11 @@ class Invertibles(object):
 
             self.handle_input()
             self.update(dt)
-            self.draw(self.screen)
+            if len(self.elementals) <= 0:
+                self.run_dialog(["Congratulations! You saved our town! Polaria is safe once more!"])
+                self.running = False
+            else:
+                self.draw(self.screen)
             pygame.display.update()
 
     def run_dialog(self, text):
@@ -308,17 +320,27 @@ class Invertibles(object):
     def spawn_elementals(self):
         """Spawn elementals in random positions on the map."""
         self.elementals = list()
-        for i in range(100):
+        count = 0
+        while count < 100:
             x = randint(0, 1120)
             y = randint(0, 1120)
             elemental = Elementals()
             elemental.position = self.map_layer.map_rect.move(x, y).topleft
-            if elemental.feet.collidelist(self.walls) == -1:
+            elemental.set_rect(x, y)
+            if elemental.rect.collidelist(self.walls) == -1:
                 self.elementals.append(elemental)
                 self.group.add(elemental)
+                count += 1
 
     def handle_dialog_box_input(self):
         for event in pygame.event.get():
+            if event.type == QUIT:
+                sys.exit()
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
                     return True
+                if event.key == K_ESCAPE or event.key == K_q:
+                    sys.exit()
+            if event.type == VIDEORESIZE:
+                init_screen(event.w, event.h)
+                self.map_layer.set_size((event.w, event.h))
