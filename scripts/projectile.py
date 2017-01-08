@@ -11,11 +11,16 @@ class Projectile(Sprite):
 
         # Store which way the shot is fired
         self.direction = direc
+        self.fire = pygame.image.load('data/spells/Fire.png').convert_alpha()
+        self.water = pygame.image.load('data/spells/Water.png').convert_alpha()
+        self.air = pygame.image.load('data/spells/Air.png').convert_alpha()
+        self.dark = pygame.image.load('data/spells/Dark.png').convert_alpha()
 
-        spells = [pygame.image.load('data/spells/Fire.png').convert_alpha(),
-         pygame.image.load('data/spells/Water.png').convert_alpha(),
-        pygame.image.load('data/spells/Air.png').convert_alpha(),
-         pygame.image.load('data/spells/Dark.png').convert_alpha()]
+
+        spells = [pygame.transform.scale(self.fire, (8, 8)),
+                  pygame.transform.scale(self.water, (8, 8)),
+                  pygame.transform.scale(self.air, (8, 8)),
+                  pygame.transform.scale(self.dark, (8, 8))]
 
         self.image = spells[current_spell]
         self.rect = self.image.get_rect()
