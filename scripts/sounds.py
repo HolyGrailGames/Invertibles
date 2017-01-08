@@ -11,6 +11,7 @@ class Sounds():
         # Sound Effects
         self.fireball = Sound('data/sounds/fireball-whoosh.ogg')
         self.select_spell = Sound('data/sounds/metal-small1.ogg')
+        self.monster_kill = Sound('data/sounds/mnstr7.ogg')
         self.set_volume()
 
 

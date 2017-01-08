@@ -3,6 +3,7 @@ import pygame
 import pyscroll
 import pyscroll.data
 import random
+from random import randint
 from pygame.sprite import Group
 from pygame.locals import *
 from pytmx.util_pygame import load_pygame
@@ -32,12 +33,6 @@ def get_map(filename):
     return os.path.join(RESOURCES_DIR, filename)
 
 class Invertibles(object):
-    """ This class is a basic game.
-
-    This class will load data, create a pyscroll group, a hero object.
-    It also reads input and moves the Hero around the map.
-    Finally, it uses a pyscroll group to render the map and Hero.
-    """
     filename = get_map(MAP_FILENAME)
 
     def __init__(self):
@@ -84,11 +79,7 @@ class Invertibles(object):
         self.heroes.append(self.hero)
 
         # Spawn an elemental below the house
-        self.elemental = Elementals()
-        self.elemental.position = self.map_layer.map_rect.move(-321, -150).center
-        self.elementals = list()
-        self.elementals.append(self.elemental)
-        self.group.add(self.elemental)
+        self.spawn_elementals()
 
         # Spawn the hero outside his house
         self.hero.position = self.map_layer.map_rect.move(-321, -185).center
@@ -274,13 +265,15 @@ class Invertibles(object):
                     self.group.remove(sprite)
                     self.group.remove(self.elementals[collide_elemental])
                     self.elementals.pop(collide_elemental)
+                    self.sounds.monster_kill.play()
+
 
 
     def run(self):
         """ Run the game loop"""
 
         self.running = True
-        self.music_channel.play(self.sounds.town_theme)
+        self.music_channel.play(self.sounds.town_theme, -1)
 
         text = ['Welcome Adventurer to the crazy world of the Polar Opposites! You will find many perils ahead that can be vanquished with your mighty magic abilities! May the power of the poles be with you!']
         self.run_dialog(text)
@@ -301,6 +294,18 @@ class Invertibles(object):
             if self.handle_dialog_box_input():
                 text.remove(text[0])
             pygame.display.update()
+
+    def spawn_elementals(self):
+        """Spawn elementals in random positions on the map."""
+        self.elementals = list()
+        for i in range(100):
+            x = randint(0, 1120)
+            y = randint(0, 1120)
+            elemental = Elementals()
+            elemental.position = self.map_layer.map_rect.move(x, y).topleft
+            if elemental.feet.collidelist(self.walls) == -1:
+                self.elementals.append(elemental)
+                self.group.add(elemental)
 
     def handle_dialog_box_input(self):
         for event in pygame.event.get():

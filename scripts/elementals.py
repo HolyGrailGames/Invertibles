@@ -42,8 +42,6 @@ class Elementals(pygame.sprite.Sprite):
         self.moving = {'UP': False, 'DOWN': False, 'LEFT': False, 'RIGHT': False}
         self.speed = 20
 
-
-
     @property
     def position(self):
         return list(self._position)
@@ -90,7 +88,6 @@ class Elementals(pygame.sprite.Sprite):
         # If 2 or more seconds have passed since last move, move again
         if current_time - self.time_of_last_move > self.move_frequency:
             direction = random.choice(directions)
-            print(direction)
             self.set_direction(direction)
 
             self.time_of_last_move = current_time

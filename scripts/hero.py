@@ -39,8 +39,6 @@ class Hero(pygame.sprite.Sprite):
         self.moving = {'UP': False, 'DOWN': False, 'LEFT': False, 'RIGHT': False}
         self.speed = 50
 
-
-
     @property
     def position(self):
         return list(self._position)
