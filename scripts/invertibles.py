@@ -81,6 +81,8 @@ class Invertibles(object):
         # layer for sprites as 2
         self.group = PyscrollGroup(map_layer=self.map_layer, default_layer=3)
         self.hero = Hero()
+        self.heroes = list()
+        self.heroes.append(self.hero)
 
         # Spawn an npc
         self.npc = NPC()
@@ -270,11 +272,8 @@ class Invertibles(object):
             elif sprite.name == 'elemental':
                 if sprite.feet.collidelist(self.walls) > -1:
                     sprite.move_back(dt)
-                else:
-                    sprite.update(dt)
-
-
-
+                elif sprite.feet.collidelist(self.heroes) > -1:
+                    sprite.move_back(dt)
 
 
             elif sprite.name == 'projectile':
