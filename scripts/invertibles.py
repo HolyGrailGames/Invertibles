@@ -15,7 +15,7 @@ from pyscroll.group import PyscrollGroup
 
 # define configuration variables here
 RESOURCES_DIR = 'data'
-HERO_MOVE_SPEED = 80  # pixels per second
+HERO_MOVE_SPEED = 50  # pixels per second
 MAP_FILENAME = 'dungeon.tmx'
 
 # simple wrapper to keep the screen resizeable
@@ -81,6 +81,9 @@ class Invertibles(object):
         self.projectile_skin = 0 # Which spell the user has selected
         self.clock = pygame.time.Clock()
 
+        # Dictionary to hold onto what keys are being held down
+        self.movement_keys = {'UP': False, 'DOWN': False, 'LEFT': False, 'RIGHT': False}
+
     def draw(self, surface, text=None):
 
         # center the map/screen on our Hero
@@ -110,32 +113,13 @@ class Invertibles(object):
                 break
 
             elif event.type == KEYDOWN:
-                if event.key == K_ESCAPE or event.key == K_q:
-                    self.running = False
-                    break
+                self.check_keydown_events(event)
+            elif event.type == KEYUP:
+                self.check_keyup_events(event)
+            self.move_hero()
 
-                elif event.key == K_EQUALS:
-                    self.map_layer.zoom += .25
-
-                elif event.key == K_MINUS:
-                    value = self.map_layer.zoom - .25
-                    if value > 0:
-                        self.map_layer.zoom = value
-
-                # Cast spells
-                elif event.key == K_UP:
-                    new_projectile = Projectile(self.screen, self.hero, 'UP', self.projectile_skin)
-                    self.group.add(new_projectile)
-                elif event.key == K_LEFT:
-                    new_projectile = Projectile(self.screen, self.hero, 'LEFT', self.projectile_skin)
-                    self.group.add(new_projectile)
-                elif event.key == K_RIGHT:
-                    new_projectile = Projectile(self.screen, self.hero, 'RIGHT', self.projectile_skin)
-                    self.group.add(new_projectile)
-                elif event.key == K_DOWN:
-                    new_projectile = Projectile(self.screen, self.hero, 'DOWN', self.projectile_skin)
-                    self.group.add(new_projectile)
-
+            if not self.running:
+                break
 
             # this will be handled if the window is resized
             elif event.type == VIDEORESIZE:
@@ -144,39 +128,81 @@ class Invertibles(object):
 
             event = poll()
 
-        # Move up or down
-        pressed = pygame.key.get_pressed()
-        if pressed[K_w]:
-            self.hero.velocity[1] = -HERO_MOVE_SPEED
-            self.hero.change_sprite(pygame.K_UP)
-        elif pressed[K_s]:
-            self.hero.velocity[1] = HERO_MOVE_SPEED
-            self.hero.change_sprite(pygame.K_DOWN)
-        else:
-            self.hero.velocity[1] = 0
+    def reset_movement_keys(self):
+        """Reset movement keys to False."""
+        self.movement_keys = {'UP': False, 'DOWN': False, 'LEFT': False, 'RIGHT': False}
 
-        # Move left or right
-        if pressed[K_a]:
-            self.hero.velocity[0] = -HERO_MOVE_SPEED
-            self.hero.change_sprite(pygame.K_LEFT)
-        elif pressed[K_d]:
-            self.hero.velocity[0] = HERO_MOVE_SPEED
-            self.hero.change_sprite(pygame.K_RIGHT)
-        else:
-            self.hero.velocity[0] = 0
+    def check_keydown_events(self, event):
+        """Check for keypresses and respond to them."""
+        if event.key == K_ESCAPE or event.key == K_q:
+            self.running = False
+
+        # Set movement key flags
+        if event.key == K_a:
+            self.reset_movement_keys()
+            self.hero.reset_velocity()
+            self.movement_keys['LEFT'] = True
+        elif event.key == K_d:
+            self.reset_movement_keys()
+            self.hero.reset_velocity()
+            self.movement_keys['RIGHT'] = True
+        elif event.key == K_w:
+            self.reset_movement_keys()
+            self.hero.reset_velocity()
+            self.movement_keys['UP'] = True
+        elif event.key == K_s:
+            self.reset_movement_keys()
+            self.hero.reset_velocity()
+            self.movement_keys['DOWN'] = True
+
+        # Cast spells
+        if event.key == K_UP:
+            new_projectile = Projectile(self.screen, self.hero, 'UP', self.projectile_skin)
+            self.group.add(new_projectile)
+        elif event.key == K_LEFT:
+            new_projectile = Projectile(self.screen, self.hero, 'LEFT', self.projectile_skin)
+            self.group.add(new_projectile)
+        elif event.key == K_RIGHT:
+            new_projectile = Projectile(self.screen, self.hero, 'RIGHT', self.projectile_skin)
+            self.group.add(new_projectile)
+        elif event.key == K_DOWN:
+            new_projectile = Projectile(self.screen, self.hero, 'DOWN', self.projectile_skin)
+            self.group.add(new_projectile)
 
         # Change spells
-
-        if pressed[K_1]:
+        if event.key == K_1:
             self.projectile_skin = 0
-        elif pressed[K_2]:
+        elif event.key == K_2:
             self.projectile_skin = 1
-        elif pressed[K_3]:
+        elif event.key == K_3:
             self.projectile_skin = 2
-        elif pressed[K_4]:
+        elif event.key == K_4:
             self.projectile_skin = 3
 
+    def check_keyup_events(self, event):
+        """Check for keyreleases and respond to them."""
+        # Set movement key flags
+        if event.key == K_a:
+            self.movement_keys['LEFT'] = False
+        if event.key == K_d:
+            self.movement_keys['RIGHT'] = False
+        if event.key == K_w:
+            self.movement_keys['UP'] = False
+        if event.key == K_s:
+            self.movement_keys['DOWN'] = False
 
+    def move_hero(self):
+        """Only move hero if one movement key is being pressed."""
+        count = 0
+        key_pressed = ''
+        for key, pressed in self.movement_keys.items():
+            if pressed:
+                key_pressed = key
+                count += 1
+        if count == 1:
+            self.hero.set_direction(key_pressed)
+        else:
+            self.hero.set_idle()
 
     def update_projectiles(self):
         """Update position of projectiles and get rid of old bullets."""
