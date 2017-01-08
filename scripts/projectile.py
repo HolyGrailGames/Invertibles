@@ -16,10 +16,9 @@ class Projectile(Sprite):
         self.air = pygame.image.load('data/spells/Air.png').convert_alpha()
         self.dark = pygame.image.load('data/spells/Dark.png').convert_alpha()
 
-
-        spells = [pygame.transform.scale(self.fire, (8, 8)),
+        spells = [pygame.transform.scale(self.air, (8, 8)),
+                  pygame.transform.scale(self.fire, (8, 8)),
                   pygame.transform.scale(self.water, (8, 8)),
-                  pygame.transform.scale(self.air, (8, 8)),
                   pygame.transform.scale(self.dark, (8, 8))]
 
         self.image = spells[current_spell]

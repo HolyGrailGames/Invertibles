@@ -8,21 +8,21 @@ class Elementals(pygame.sprite.Sprite):
 
     def __init__(self):
         pygame.sprite.Sprite.__init__(self)
-        self.sprites =      {'DOWN':  [pygame.image.load('data/elementals/fire/fire_down_walk1.png').convert_alpha(),
-                                       pygame.image.load('data/elementals/fire/fire_down_walk2.png').convert_alpha(),
-                                       pygame.image.load('data/elementals/fire/fire_down_idle.png').convert_alpha()],
+        self.sprites =      {'DOWN':  [pygame.image.load('data/elementals/dark/dark_down_walk1.png').convert_alpha(),
+                                       pygame.image.load('data/elementals/dark/dark_down_walk2.png').convert_alpha(),
+                                       pygame.image.load('data/elementals/dark/dark_down_idle.png').convert_alpha()],
 
-                             'UP':    [pygame.image.load('data/elementals/fire/fire_up_walk1.png').convert_alpha(),
-                                       pygame.image.load('data/elementals/fire/fire_up_walk2.png').convert_alpha(),
-                                       pygame.image.load('data/elementals/fire/fire_up_idle.png').convert_alpha()],
+                             'UP':    [pygame.image.load('data/elementals/dark/dark_up_walk1.png').convert_alpha(),
+                                       pygame.image.load('data/elementals/dark/dark_up_walk2.png').convert_alpha(),
+                                       pygame.image.load('data/elementals/dark/dark_up_idle.png').convert_alpha()],
 
-                             'RIGHT': [pygame.image.load('data/elementals/fire/fire_right_walk1.png').convert_alpha(),
-                                       pygame.image.load('data/elementals/fire/fire_right_walk2.png').convert_alpha(),
-                                       pygame.image.load('data/elementals/fire/fire_right_idle.png').convert_alpha()],
+                             'RIGHT': [pygame.image.load('data/elementals/dark/dark_right_walk1.png').convert_alpha(),
+                                       pygame.image.load('data/elementals/dark/dark_right_walk2.png').convert_alpha(),
+                                       pygame.image.load('data/elementals/dark/dark_right_idle.png').convert_alpha()],
 
-                             'LEFT':  [pygame.image.load('data/elementals/fire/fire_left_walk1.png').convert_alpha(),
-                                       pygame.image.load('data/elementals/fire/fire_left_walk2.png').convert_alpha(),
-                                       pygame.image.load('data/elementals/fire/fire_left_idle.png').convert_alpha()]}
+                             'LEFT':  [pygame.image.load('data/elementals/dark/dark_left_walk1.png').convert_alpha(),
+                                       pygame.image.load('data/elementals/dark/dark_left_walk2.png').convert_alpha(),
+                                       pygame.image.load('data/elementals/dark/dark_left_idle.png').convert_alpha()]}
 
         self.current_sprites = self.sprites['DOWN']
         self.image = self.current_sprites[2]

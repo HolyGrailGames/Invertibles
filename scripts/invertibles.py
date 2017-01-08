@@ -9,6 +9,7 @@ from pygame.locals import *
 from pytmx.util_pygame import load_pygame
 from pyscroll.group import PyscrollGroup
 
+from scripts.npc import NPC
 from scripts.projectile import Projectile
 from scripts.hero import Hero
 from scripts.sounds import Sounds
@@ -77,6 +78,13 @@ class Invertibles(object):
         self.hero = Hero()
         self.heroes = list()
         self.heroes.append(self.hero)
+
+        # Spawn an npc
+        self.npc = NPC()
+        self.npc.position = self.map_layer.map_rect.move(544, 592).topleft
+        self.group.add(self.npc)
+        self.npcs = list()
+        self.npcs.append(self.npc)
 
         # Spawn an elemental below the house
         self.spawn_elementals()
@@ -249,6 +257,8 @@ class Invertibles(object):
                 if sprite.feet.collidelist(self.walls) > -1:
                     sprite.move_back(dt)
                 elif sprite.feet.collidelist(self.elementals) > -1:
+                    sprite.move_back(dt)
+                elif sprite.feet.collidelist(self.npcs) > -1:
                     sprite.move_back(dt)
             elif sprite.name == 'elemental':
                 if sprite.feet.collidelist(self.walls) > -1:
