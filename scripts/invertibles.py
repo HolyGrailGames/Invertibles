@@ -2,20 +2,19 @@ import os.path
 import pygame
 import pyscroll
 import pyscroll.data
-
-from scripts.projectile import Projectile
-from scripts.hero import Hero
 from pygame.sprite import Group
-from scripts.dialog_box import DialogBox
 from pygame.locals import *
 from pytmx.util_pygame import load_pygame
 from pyscroll.group import PyscrollGroup
 
+from scripts.projectile import Projectile
+from scripts.hero import Hero
+from scripts.sounds import Sounds
+from scripts.dialog_box import DialogBox
 
 
 # define configuration variables here
 RESOURCES_DIR = 'data'
-HERO_MOVE_SPEED = 50  # pixels per second
 MAP_FILENAME = 'dungeon.tmx'
 
 # simple wrapper to keep the screen resizeable
@@ -37,10 +36,15 @@ class Invertibles(object):
     filename = get_map(MAP_FILENAME)
 
     def __init__(self):
+        pygame.mixer.pre_init(44100, 16, 1, 4096)
         pygame.init()
         pygame.font.init()
         self.screen = init_screen(800, 600)
         pygame.display.set_caption('Invertibles.')
+
+        # Music channel
+        self.music_channel = pygame.mixer.Channel(1)
+        self.sounds = Sounds()
 
         # Store projectiles in a group
         self.projectiles = Group()
@@ -159,25 +163,33 @@ class Invertibles(object):
         if event.key == K_UP:
             new_projectile = Projectile(self.screen, self.hero, 'UP', self.projectile_skin)
             self.group.add(new_projectile)
+            self.sounds.fireball.play()
         elif event.key == K_LEFT:
             new_projectile = Projectile(self.screen, self.hero, 'LEFT', self.projectile_skin)
             self.group.add(new_projectile)
+            self.sounds.fireball.play()
         elif event.key == K_RIGHT:
             new_projectile = Projectile(self.screen, self.hero, 'RIGHT', self.projectile_skin)
             self.group.add(new_projectile)
+            self.sounds.fireball.play()
         elif event.key == K_DOWN:
             new_projectile = Projectile(self.screen, self.hero, 'DOWN', self.projectile_skin)
             self.group.add(new_projectile)
+            self.sounds.fireball.play()
 
         # Change spells
         if event.key == K_1:
             self.projectile_skin = 0
+            self.sounds.select_spell.play()
         elif event.key == K_2:
             self.projectile_skin = 1
+            self.sounds.select_spell.play()
         elif event.key == K_3:
             self.projectile_skin = 2
+            self.sounds.select_spell.play()
         elif event.key == K_4:
             self.projectile_skin = 3
+            self.sounds.select_spell.play()
 
     def check_keyup_events(self, event):
         """Check for keyreleases and respond to them."""
@@ -237,6 +249,7 @@ class Invertibles(object):
         """ Run the game loop"""
 
         self.running = True
+        self.music_channel.play(self.sounds.town_theme)
 
         text = ['Welcome Adventurer to the crazy world of the Polar Opposites! You will find many perils ahead that can be vanquished with your mighty magic abilities! May the power of the poles be with you!']
         self.run_dialog(text)
