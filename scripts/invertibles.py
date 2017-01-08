@@ -15,7 +15,11 @@ from scripts.dialog_box import DialogBox
 
 # define configuration variables here
 RESOURCES_DIR = 'data'
-MAP_FILENAME = 'dungeon.tmx'
+
+# Choose map
+#MAP_FILENAME = 'dungeon.tmx'
+#MAP_FILENAME = 'house_1.tmx'
+MAP_FILENAME = 'town.tmx'
 
 # simple wrapper to keep the screen resizeable
 def init_screen(width, height):
@@ -77,7 +81,7 @@ class Invertibles(object):
         self.hero = Hero()
 
         # put the hero in the center of the map
-        self.hero.position = self.map_layer.map_rect.center
+        self.hero.position = self.map_layer.map_rect.move(-321, -185).center
 
         # add our hero to the group
         self.group.add(self.hero)
