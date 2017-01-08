@@ -43,7 +43,7 @@ class Invertibles(object):
         pygame.init()
         pygame.font.init()
         self.screen = init_screen(800, 600)
-        pygame.display.set_caption('Invertibles.')
+        pygame.display.set_caption('Polaria')
 
         # Music channel
         self.music_channel = pygame.mixer.Channel(1)
